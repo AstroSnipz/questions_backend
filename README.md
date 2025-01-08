@@ -66,13 +66,14 @@ Ensure your database has a `questions` table with the following schema:
 ```sql
 CREATE TABLE questions (
     id SERIAL PRIMARY KEY,
+    stack_id INT NOT NULL UNIQUE,
     title TEXT NOT NULL,
-    body TEXT NOT NULL,
+    body TEXT,
     is_answered BOOLEAN NOT NULL,
-    tags TEXT[] NOT NULL,
-    score INT NOT NULL,
-    answer_count INT NOT NULL,
-    created_at TIMESTAMP NOT NULL
+    tags TEXT[],
+    score INT,
+    answer_count INT,
+    created_at TIMESTAMP
 );
 ```
 
