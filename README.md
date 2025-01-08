@@ -1,36 +1,183 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Questions Backend API
 
-## Getting Started
+This project provides a backend API for managing questions loaded from the Stack Overflow API. The API allows you to load, create, fetch, update, and delete questions while supporting filtering, sorting, and pagination.
 
-First, run the development server:
+---
+
+## **Features**
+
+- **POST /api/questions/load**: Load questions from the Stack Overflow API into your database.
+- **GET /api/questions**: Fetch questions with filtering, sorting, and pagination.
+- **POST /api/questions**: Create a new question.
+- **GET /api/questions/:id**: Fetch a specific question by its ID.
+- **PUT /api/questions/:id**: Update a question by its ID.
+- **DELETE /api/questions/:id**: Delete a question by its ID.
+
+---
+
+## **Technologies Used**
+
+- **Node.js**: Backend runtime.
+- **PostgreSQL**: Database for storing questions.
+- **Next.js**: Used for API routing.
+- **Postman**: For API testing.
+- **dotenv**: To manage environment variables.
+
+---
+
+## **Getting Started**
+
+### **Prerequisites**
+
+1. **Node.js**: [Install Node.js](https://nodejs.org/)
+2. **PostgreSQL**: [Install PostgreSQL](https://www.postgresql.org/)
+3. **Postman**: [Install Postman](https://www.postman.com/)
+
+---
+
+### **Setup Instructions**
+
+1. **Clone the Repository**
+
+   ```bash
+   git clone https://github.com/your-username/questions-backend.git
+   cd questions-backend
+   ```
+
+## Install Dependencies
+
+```bash
+npm install
+```
+
+## Set Up Environment Variables
+
+Create a `.env` file in the root directory with the following values:
+
+```env
+DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<database>
+STACK_OVERFLOW_API_KEY=your_stack_overflow_api_key
+```
+
+## Run Database Migrations
+
+Ensure your database has a `questions` table with the following schema:
+
+```sql
+CREATE TABLE questions (
+    id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    body TEXT NOT NULL,
+    is_answered BOOLEAN NOT NULL,
+    tags TEXT[] NOT NULL,
+    score INT NOT NULL,
+    answer_count INT NOT NULL,
+    created_at TIMESTAMP NOT NULL
+);
+```
+
+## Start the Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Test with Postman
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Use the Postman collection provided or create your own requests to test the API.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## API Endpoints
 
-To learn more about Next.js, take a look at the following resources:
+### 1. POST `/api/questions/load`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Description:** Load questions from Stack Overflow into the database.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Response:**
 
-## Deploy on Vercel
+- `201 Created`: Successfully loaded questions.
+- `500 Internal Server Error`: An error occurred.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 2. GET `/api/questions`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Description:** Fetch all questions with optional filters, sorting, and pagination.
+
+**Query Parameters:**
+
+- `is_answered` (boolean): Filter by answered status.
+- `tags` (comma-separated list): Filter by tags.
+- `answers_count__gt` (int): Filter by answer count greater than a value.
+- `answers_count__lt` (int): Filter by answer count less than a value.
+- `sort` (string): Sort by `score` or `created_at`.
+- `page` (int): Pagination (default is 1).
+
+**Response:**
+
+- `200 OK`: Returns a list of questions.
+
+### 3. POST `/api/questions`
+
+**Description:** Create a new question.
+
+**Request Body:**
+
+```json
+{
+  "stack_id": 123,
+  "title": "Question title",
+  "body": "Question body",
+  "is_answered": false,
+  "tags": ["tag1", "tag2"],
+  "score": 0,
+  "answer_count": 0,
+  "created_at": "2025-01-07T10:00:00Z"
+}
+```
+
+**Response:**
+
+- `201 Created`: Returns the created question.
+
+### 4. GET `/api/questions/:id`
+
+**Description:** Fetch a specific question by its ID.
+
+**Response:**
+
+- `200 OK`: Returns the question details.
+- `404 Not Found`: Question not found.
+
+### 5. PUT `/api/questions/:id`
+
+**Description:** Update a specific question by its ID.
+
+**Request Body:**
+
+```json
+{
+  "title": "Updated title for the question",
+  "body": "Updated body for the question.",
+  "is_answered": true,
+  "tags": ["updated", "question"],
+  "score": 10,
+  "answer_count": 5,
+  "created_at": "2025-01-07T10:00:00Z"
+}
+```
+
+**Response:**
+
+- `200 OK`: Returns the updated question.
+- `404 Not Found`: Question not found.
+
+### 6. DELETE `/api/questions/:id`
+
+**Description:** Delete a specific question by its ID.
+
+**Response:**
+
+- `200 OK`: Successfully deleted.
+- `404 Not Found`: Question not found.
+
+---
