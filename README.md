@@ -56,7 +56,6 @@ Create a `.env` file in the root directory with the following values:
 
 ```env
 DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<database>
-STACK_OVERFLOW_API_KEY=your_stack_overflow_api_key
 ```
 
 ## Run Database Migrations
